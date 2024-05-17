@@ -1,0 +1,9 @@
+[user]
+name = cp-20
+email = n.naoki.1587@gmail.com
+[init]
+defaultBranch = main
+[core]
+editor = code --wait
+[ghq]
+root = ~/ghq
