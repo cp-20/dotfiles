@@ -49,7 +49,7 @@ const setupPackages = async () => {
 
 const setupFish = async () => {
   await block('Fish shell')(async () => {
-    await $`sudo apt-add-repository ppa:fish-shell/release-3`;
+    await $`sudo apt-add-repository ppa:fish-shell/release-3 -y `;
     await $`sudo apt update`;
     await $`sudo apt install -y fish`;
   }, await which('fish'));
