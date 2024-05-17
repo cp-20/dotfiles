@@ -5,14 +5,19 @@ import { join } from 'jsr:@std/path@0.221.0/join';
 
 export const log = {
   start: (msg: string) =>
-    console.log(`[${msg}] ${'-'.repeat(50 - msg.length)}`),
+    console.log(`TASK [${msg}] ${'-'.repeat(80 - msg.length)}`),
   end: (msg: string) => console.log(`${green('[ok]')} ${msg}`),
   skip: (msg: string) => console.log(`${green('[skip]')} ${msg}`),
   error: (msg: string) => console.log(`${red('[error]')} ${msg}`),
 };
 
-export const which = async (cmd: string) =>
-  (await $`which ${cmd}`.quiet()).code === 0;
+export const which = async (cmd: string) => {
+  try {
+    return (await $`which ${cmd}`.quiet()).code === 0;
+  } catch (_err) {
+    return false;
+  }
+};
 
 export const block =
   (name: string) => async (install: () => Promise<unknown>, skip?: boolean) => {
@@ -66,10 +71,10 @@ const setupFish = async () => {
     );
     const remove = installed.filter((plugin) => !plugins.includes(plugin));
     if (notInstalled.length > 0) {
-      await $`fisher install ${notInstalled.join(' ')}`;
+      await $`fisher install ${notInstalled}`;
     }
     if (remove.length > 0) {
-      await $`fisher remove ${remove.join(' ')}`;
+      await $`fisher remove ${remove}`;
     }
   });
 };
@@ -90,7 +95,7 @@ const setupBrew = async () => {
 
   await block('Brew packages')(async () => {
     const packages = ['ghq', 'gh', 'jnv', 'gcc', 'llvm', 'clang'];
-    await $`brew install ${packages.join(' ')}`;
+    await $`brew install ${packages}`;
   });
 };
 
@@ -105,7 +110,7 @@ const setupNode = async () => {
 
   await block('Node packages')(async () => {
     const packages = ['@google/clasp', 'wrangler'];
-    await $`npm install -g ${packages.join(' ')}`;
+    await $`npm install -g ${packages}`;
   });
 
   await block('Deno')(async () => {
@@ -138,7 +143,7 @@ const setupPython = async () => {
       'torch',
       'tqdm',
     ];
-    await $`pip3 install ${packages.join(' ')}`;
+    await $`pip3 install ${packages}`;
   });
 };
 
