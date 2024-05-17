@@ -38,7 +38,7 @@ const setupPackages = async () => {
   await block('Package')(async () => {
     await $`sudo apt update`;
     await $`sudo apt upgrade -y`;
-    await $`sudo apt install -y make sqlite jq git curl wget unzip zip tar`;
+    await $`sudo apt install -y make sqlite3 jq git curl wget unzip zip tar`;
   });
 };
 

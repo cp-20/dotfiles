@@ -16,7 +16,7 @@ git clone https://github.com/cp-20/dotfiles.git ~/ghq/github.com/cp-20/dotfiles 
 curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/tmp/.deno sh
 
 # 4. Run the initial setup
-$DENO_INSTALL/bin/deno run ~/ghq/github.com/cp-20/dotfiles/scripts/wsl.ts
+/tmp/.deno/bin/deno run ~/ghq/github.com/cp-20/dotfiles/scripts/wsl.ts
 
 # 5. Clean up
 rm -rf /tmp/.deno
