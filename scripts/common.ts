@@ -77,6 +77,10 @@ const setupFish = async () => {
       await $`fisher remove ${remove}`;
     }
   });
+
+  await block('Default shell')(async () => {
+    await $`chsh -s $(which fish)`;
+  });
 };
 
 const setupAnsible = async () => {
@@ -102,8 +106,8 @@ const setupBrew = async () => {
 const setupNode = async () => {
   await block('Node.js')(async () => {
     await $`sudo apt install -y nodejs npm`;
-    await $`sudo npm install -g n`;
-    await $`sudo n lts`;
+    await $`npm install -g n`;
+    await $`n lts`;
     await $`sudo apt purge -y nodejs npm`;
     await $`sudo apt autoremove -y`;
   }, await which('node'));
@@ -136,6 +140,7 @@ const setupPython = async () => {
       'modal-client',
       'numpy',
       'Pillow',
+      'pip',
       'requests',
       'scikit-learn',
       'scipy',
@@ -143,7 +148,7 @@ const setupPython = async () => {
       'torch',
       'tqdm',
     ];
-    await $`pip3 install ${packages}`;
+    await $`python3 -m pip3 install ${packages}`;
   });
 };
 
@@ -155,9 +160,10 @@ const setupGo = async () => {
 
 const setupSymlink = async () => {
   await block('Symlink')(async () => {
-    const files = await readDirRecursive('./files');
+    const filesDirPath = join(import.meta.url, './files');
+    const files = await readDirRecursive(filesDirPath);
     for (const file of files) {
-      const path = join('~/', file.replace('files/', ''));
+      const path = join('~/', file.replace(filesDirPath, ''));
       await $`ln -s ${path} ${file}`;
     }
   });
