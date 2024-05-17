@@ -38,7 +38,7 @@ const setupPackages = async () => {
   await block('Package')(async () => {
     await $`sudo apt update`;
     await $`sudo apt upgrade -y`;
-    await $`sudo apt install -y gcc g++ make clang llvm sqlite jq git curl wget unzip zip tar`;
+    await $`sudo apt install -y make sqlite jq git curl wget unzip zip tar`;
   });
 };
 
@@ -89,21 +89,7 @@ const setupBrew = async () => {
   }, await which('brew'));
 
   await block('Brew packages')(async () => {
-    const packages = [
-      'ghq',
-      'gh',
-      'jnv',
-      'gcc',
-      'llvm',
-      'clang',
-      'sqlite',
-      'jq',
-      'ripgrep',
-      'starship',
-      'tmux',
-      'tree',
-      'zsh',
-    ];
+    const packages = ['ghq', 'gh', 'jnv', 'gcc', 'llvm', 'clang'];
     await $`brew install ${packages.join(' ')}`;
   });
 };
