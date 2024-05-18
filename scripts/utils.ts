@@ -36,9 +36,10 @@ export const block =
       log.end(`Successfully set up ${name}`);
       setupResults.push({ name, result: 'ok' });
       return 'ok';
-    } catch (_err) {
+    } catch (err) {
       log.error(`Something went wrong in setting up ${name}`);
       setupResults.push({ name, result: 'error' });
+      console.error(err);
       return 'error';
     }
   };
