@@ -1,4 +1,3 @@
-import $ from 'jsr:@david/dax';
 import { cyan, green, red } from 'https://deno.land/std@0.224.0/fmt/colors.ts';
 import { setupResults } from './result.ts';
 
@@ -23,20 +22,12 @@ export const log = {
   error: (msg: string) => console.log(`${red('[error]')} ${msg}`),
 };
 
-export const which = async (cmd: string) => {
-  try {
-    return (await $`which ${cmd}`.quiet()).code === 0;
-  } catch (_err) {
-    return false;
-  }
-};
-
 export const block =
   (name: string) => async (install: () => Promise<unknown>, skip?: boolean) => {
     if (skip) {
       log.skip(`Skipping ${name}`);
       setupResults.push({ name, result: 'skip' });
-      return;
+      return 'skip';
     }
 
     try {
@@ -44,8 +35,10 @@ export const block =
       await install();
       log.end(`Successfully set up ${name}`);
       setupResults.push({ name, result: 'ok' });
+      return 'ok';
     } catch (_err) {
       log.error(`Something went wrong in setting up ${name}`);
       setupResults.push({ name, result: 'error' });
+      return 'error';
     }
   };

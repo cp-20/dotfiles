@@ -1,5 +1,5 @@
 import $ from 'jsr:@david/dax';
-import { block, readDirRecursive, which } from './utils.ts';
+import { block, readDirRecursive } from './utils.ts';
 import { join } from 'jsr:@std/path@0.221.0/join';
 
 const setupPackages = async () => {
@@ -15,11 +15,11 @@ const setupFish = async () => {
     await $`sudo apt-add-repository ppa:fish-shell/release-3 -y `;
     await $`sudo apt update`;
     await $`sudo apt install -y fish`;
-  }, await which('fish'));
+  }, await $.commandExists('fish'));
 
   await block('Fisher')(async () => {
-    await $`curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher`;
-  }, await which('fisher'));
+    await $`fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher"`;
+  }, await $.commandExists('fisher'));
 
   await block('Fish plugins')(async () => {
     const plugins = [
@@ -52,47 +52,50 @@ const setupAnsible = async () => {
     await $`sudo apt install software-properties-common`;
     await $`sudo apt-add-repository --yes --update ppa:ansible/ansible`;
     await $`sudo apt install -y ansible`;
-  }, await which('ansible'));
+  }, await $.commandExists('ansible'));
 };
 
 const setupBrew = async () => {
-  await block('Linuxbrew')(async () => {
+  const result = await block('Linuxbrew')(async () => {
     await $`/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`;
-  }, await which('brew'));
+  }, await $.commandExists('brew'));
 
   await block('Brew packages')(async () => {
     const packages = ['ghq', 'gh', 'jnv', 'gcc', 'llvm', 'clang'];
     await $`brew install ${packages}`;
-  });
+  }, result === 'ok' || result === 'skip');
 };
 
 const setupNode = async () => {
-  await block('Node.js')(async () => {
+  const result = await block('Node.js')(async () => {
     await $`sudo apt install -y nodejs npm`;
+    await $`sudo chmod 777 /usr/local/lib`;
+    await $`sudo chmod 777 /usr/local/bin`;
+    await $`sudo chmod 777 /usr/local/include`;
     await $`npm install -g n`;
     await $`n lts`;
     await $`sudo apt purge -y nodejs npm`;
     await $`sudo apt autoremove -y`;
-  }, await which('node'));
+  }, await $.commandExists('node'));
 
   await block('Node packages')(async () => {
     const packages = ['@google/clasp', 'wrangler'];
     await $`npm install -g ${packages}`;
-  });
+  }, result === 'ok' || result === 'skip');
 
   await block('Deno')(async () => {
     await $`curl -fsSL https://deno.land/install.sh | sh`;
-  }, await which('deno'));
+  }, await $.commandExists('deno'));
 
   await block('Bun')(async () => {
     await $`curl -fsSL https://bun.sh/install | bash`;
-  }, await which('bun'));
+  }, await $.commandExists('bun'));
 };
 
 const setupPython = async () => {
-  await block('Python')(async () => {
+  const result = await block('Python')(async () => {
     await $`sudo apt install -y python3 python3-pip`;
-  }, await which('python3'));
+  }, await $.commandExists('python3'));
 
   await block('Python packages')(async () => {
     const packages = [
@@ -112,13 +115,13 @@ const setupPython = async () => {
       'tqdm',
     ];
     await $`python3 -m pip3 install ${packages}`;
-  });
+  }, result === 'ok' || result === 'skip');
 };
 
 const setupGo = async () => {
   await block('Go')(async () => {
     await $`sudo apt install -y golang-go`;
-  }, await which('go'));
+  }, await $.commandExists('go'));
 };
 
 const setupSymlink = async () => {
