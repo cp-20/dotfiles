@@ -45,8 +45,9 @@ const setupFish = async () => {
   });
 
   await block('Default shell')(async () => {
-    await $.raw`chsh -s $(which fish)`;
-  });
+    const fishDir = await $`which fish`.text();
+    await $`chsh -s ${fishDir}`;
+  }, await $.commandExists('fish'));
 };
 
 const setupAnsible = async () => {
@@ -60,7 +61,9 @@ const setupAnsible = async () => {
 
 const setupBrew = async () => {
   const result = await block('Linuxbrew')(async () => {
-    await $`/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`;
+    await $`bash`.stdin(
+      $`curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh`
+    );
   }, await $.commandExists('brew'));
 
   await block('Brew packages')(async () => {
@@ -72,9 +75,9 @@ const setupBrew = async () => {
 const setupNode = async () => {
   const result = await block('Node.js')(async () => {
     await $`sudo apt install -y nodejs npm`;
-    await $`sudo chmod 777 /usr/local/lib`;
-    await $`sudo chmod 777 /usr/local/bin`;
-    await $`sudo chmod 777 /usr/local/include`;
+    await $.path('/usr/local/lib').chmod(777);
+    await $.path('/usr/local/bin').chmod(777);
+    await $.path('/usr/local/include').chmod(777);
     await $`npm install -g n`;
     await $`n lts`;
     await $`sudo apt purge -y nodejs npm`;
@@ -97,8 +100,12 @@ const setupNode = async () => {
 
 const setupPython = async () => {
   const result = await block('Python')(async () => {
-    await $`sudo apt install -y python3 python3-pip`;
+    await $`sudo apt install -y python3`;
   }, await $.commandExists('python3'));
+
+  const result2 = await block('pip')(async () => {
+    await $`sudo apt install -y python3-pip`;
+  }, await $.commandExists('pip3'));
 
   await block('Python packages')(async () => {
     const packages = [
@@ -118,7 +125,7 @@ const setupPython = async () => {
       'tqdm',
     ];
     await $`python3 -m pip3 install ${packages}`;
-  }, result === 'ok' || result === 'skip');
+  }, (result === 'ok' || result === 'skip') && (result2 === 'ok' || result2 === 'skip'));
 };
 
 const setupGo = async () => {
@@ -129,11 +136,11 @@ const setupGo = async () => {
 
 const setupSymlink = async () => {
   await block('Symlink')(async () => {
-    const filesDirPath = join(import.meta.url, './files');
+    const filesDirPath = join(import.meta.url, '../files');
     const files = await readDirRecursive(filesDirPath);
     for (const file of files) {
       const path = join('~/', file.replace(filesDirPath, ''));
-      await $`ln -s ${path} ${file}`;
+      await $.path(path).symlinkTo(file, { kind: 'absolute' });
     }
   });
 };
