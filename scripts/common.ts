@@ -6,7 +6,7 @@ const setupPackages = async () => {
   await block('Package')(async () => {
     await $`sudo apt update`;
     await $`sudo apt upgrade -y`;
-    await $`sudo apt install -y make sqlite3 jq git curl wget unzip zip tar build-essential clang gcc g++ llvm`;
+    await $`sudo apt install -y make sqlite3 util-linux-extra jq git curl wget unzip zip tar build-essential clang gcc g++ llvm`;
   });
 };
 
@@ -47,7 +47,7 @@ const setupFish = async () => {
   await block('Default shell')(async () => {
     const fishDir = await $`which fish`.text();
     await $`chsh -s ${fishDir}`;
-  }, (await $.commandExists('fish')) || result === 'error');
+  }, result === 'error');
 };
 
 const setupAnsible = async () => {
