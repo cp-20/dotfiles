@@ -8,8 +8,14 @@ sudo apt update
 sudo apt upgrade -y
 sudo apt install -y curl wget unzip git
 
-# 2. Clone the dotfiles repository
-git clone https://github.com/cp-20/dotfiles.git ~/ghq/github.com/cp-20/dotfiles # or preferred directory
+# 2. Clone the dotfiles repository (update if exists)
+if [ -d "~/ghq/github.com/cp-20/dotfiles" ]; then
+  cd ~/ghq/github.com/cp-20/dotfiles || exit
+  git pull
+  cd ~
+else
+  git clone https://github.com/cp-20/dotfiles.git ~/ghq/github.com/cp-20/dotfiles # or preferred directory
+fi
 
 # 3. Install Deno temporally for the initial setup
 # TODO: setup with compiled binary, without Deno directly
