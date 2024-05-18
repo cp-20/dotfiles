@@ -24,6 +24,9 @@ curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/tmp/.deno sh
 # 4. Run the initial setup
 /tmp/.deno/bin/deno run -A ~/ghq/github.com/cp-20/dotfiles/scripts/wsl.ts
 
+# 5. update shell variables
+source ~/.bashrc
+
 # 5. Clean up
 rm -rf /tmp/.deno
 ```
