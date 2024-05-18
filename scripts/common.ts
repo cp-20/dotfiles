@@ -6,20 +6,20 @@ const setupPackages = async () => {
   await block('Package')(async () => {
     await $`sudo apt update`;
     await $`sudo apt upgrade -y`;
-    await $`sudo apt install -y make sqlite3 jq git curl wget unzip zip tar`;
+    await $`sudo apt install -y make sqlite3 jq git curl wget unzip zip tar build-essential`;
   });
 };
 
 const setupFish = async () => {
-  await block('Fish shell')(async () => {
+  const result = await block('Fish shell')(async () => {
     await $`sudo apt-add-repository ppa:fish-shell/release-3 -y `;
     await $`sudo apt update`;
     await $`sudo apt install -y fish`;
   }, await $.commandExists('fish'));
 
-  await block('Fisher')(async () => {
+  const result2 = await block('Fisher')(async () => {
     await $`fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher"`;
-  }, await $.commandExists('fisher'));
+  }, (await $.commandExists('fisher')) || result === 'error');
 
   await block('Fish plugins')(async () => {
     const plugins = [
@@ -42,12 +42,12 @@ const setupFish = async () => {
     if (remove.length > 0) {
       await $`fish -c "fisher remove ${remove}"`;
     }
-  });
+  }, result === 'error' || result2 === 'error');
 
   await block('Default shell')(async () => {
     const fishDir = await $`which fish`.text();
     await $`chsh -s ${fishDir}`;
-  }, await $.commandExists('fish'));
+  }, (await $.commandExists('fish')) || result === 'error');
 };
 
 const setupAnsible = async () => {
@@ -64,6 +64,8 @@ const setupBrew = async () => {
     await $`bash`.stdin(
       $`curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh`
     );
+    await $`(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/cp20/.bashrc`;
+    await $`eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"`;
   }, await $.commandExists('brew'));
 
   await block('Brew packages')(async () => {
@@ -93,6 +95,8 @@ const setupNode = async () => {
 
   await block('Bun')(async () => {
     await $`curl -fsSL https://bun.sh/install | bash`;
+    await $`PATH=$PATH:~/.bun/bin >> ~/.bashrc`;
+    await $`source ~/.bashrc`;
   }, await $.commandExists('bun'));
 };
 
