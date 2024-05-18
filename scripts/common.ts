@@ -23,6 +23,7 @@ const setupFish = async () => {
 
   await block('Fish plugins')(async () => {
     const plugins = [
+      'jorgebucaran/fisher',
       'jethrokuan/z',
       'jethrokuan/fzf',
       'oh-my-fish/theme-bobthefish',
