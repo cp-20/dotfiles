@@ -1,43 +1,6 @@
 import $ from 'jsr:@david/dax';
-import { green, red } from 'https://deno.land/std@0.224.0/fmt/colors.ts';
-import { readDirRecursive } from './utils.ts';
+import { block, readDirRecursive, which } from './utils.ts';
 import { join } from 'jsr:@std/path@0.221.0/join';
-
-export const log = {
-  start: (msg: string) =>
-    console.log(`TASK [${msg}] ${'-'.repeat(80 - msg.length)}`),
-  end: (msg: string) => console.log(`${green('[ok]')} ${msg}`),
-  skip: (msg: string) => console.log(`${green('[skip]')} ${msg}`),
-  error: (msg: string) => console.log(`${red('[error]')} ${msg}`),
-};
-
-export const which = async (cmd: string) => {
-  try {
-    return (await $`which ${cmd}`.quiet()).code === 0;
-  } catch (_err) {
-    return false;
-  }
-};
-
-export const block =
-  (name: string) => async (install: () => Promise<unknown>, skip?: boolean) => {
-    if (skip) return log.skip(`Skipping ${name}`);
-
-    try {
-      log.start(`Setting up ${name}`);
-      await install();
-      log.end(`Successfully set up ${name}`);
-    } catch (err) {
-      log.error(`Something went wrong in setting up ${name}`);
-      console.error(err);
-    }
-  };
-
-const setupDir = async () => {
-  await block('Directory')(async () => {
-    await $`mkdir -p ~/ghq`;
-  });
-};
 
 const setupPackages = async () => {
   await block('Package')(async () => {
@@ -170,7 +133,6 @@ const setupSymlink = async () => {
 };
 
 export const setupCommon = async () => {
-  await setupDir();
   await setupPackages();
   await setupFish();
   await setupAnsible();
