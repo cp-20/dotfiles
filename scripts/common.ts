@@ -28,16 +28,18 @@ const setupFish = async () => {
       'oh-my-fish/theme-bobthefish',
     ];
 
-    const installed = (await $`fisher list`.quiet().text()).split('\n');
+    const installed = (await $`fish -c "fisher list"`.quiet().text()).split(
+      '\n'
+    );
     const notInstalled = plugins.filter(
       (plugin) => !installed.includes(plugin)
     );
     const remove = installed.filter((plugin) => !plugins.includes(plugin));
     if (notInstalled.length > 0) {
-      await $`fisher install ${notInstalled}`;
+      await $`fish -c "fisher install ${notInstalled}"`;
     }
     if (remove.length > 0) {
-      await $`fisher remove ${remove}`;
+      await $`fish -c "fisher remove ${remove}"`;
     }
   });
 
