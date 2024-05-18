@@ -9,8 +9,8 @@ sudo apt upgrade -y
 sudo apt install -y curl wget unzip git
 
 # 2. Clone the dotfiles repository (update if exists)
-if [ -d "~/ghq/github.com/cp-20/dotfiles" ]; then
-  cd ~/ghq/github.com/cp-20/dotfiles || exit
+if [ -d "$HOME/ghq/github.com/cp-20/dotfiles" ]; then
+  cd ~/ghq/github.com/cp-20/dotfiles
   git pull
   cd ~
 else
