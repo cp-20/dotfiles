@@ -75,9 +75,7 @@ const setupBrew = async () => {
 const setupNode = async () => {
   const result = await block('Node.js')(async () => {
     await $`sudo apt install -y nodejs npm`;
-    await $.path('/usr/local/lib').chmod(777);
-    await $.path('/usr/local/bin').chmod(777);
-    await $.path('/usr/local/include').chmod(777);
+    await $`sudo chmod 777 /usr/local/lib /usr/local/bin /usr/local/include`;
     await $`npm install -g n`;
     await $`n lts`;
     await $`sudo apt purge -y nodejs npm`;
@@ -136,7 +134,7 @@ const setupGo = async () => {
 
 const setupSymlink = async () => {
   await block('Symlink')(async () => {
-    const filesDirPath = join(import.meta.url, '../files');
+    const filesDirPath = join(import.meta.url, '../../files');
     const files = await readDirRecursive(filesDirPath);
     for (const file of files) {
       const path = join('~/', file.replace(filesDirPath, ''));
