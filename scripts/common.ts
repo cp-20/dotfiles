@@ -6,7 +6,7 @@ const setupPackages = async () => {
   await block('Package')(async () => {
     await $`sudo apt update`;
     await $`sudo apt upgrade -y`;
-    await $`sudo apt install -y make sqlite3 util-linux-extra jq git curl wget unzip zip tar build-essential clang gcc g++ llvm`;
+    await $`sudo apt install -y make sqlite3 util-linux-extra jq git curl wget unzip zip tar build-essential clang gcc g++ llvm fzf`;
   });
 };
 
@@ -27,6 +27,7 @@ const setupFish = async () => {
       'jethrokuan/z',
       'jethrokuan/fzf',
       'oh-my-fish/theme-bobthefish',
+      'tsub/fzf_ghq',
     ];
 
     const installed = (await $`fish -c "fisher list"`.quiet().text()).split(
@@ -35,12 +36,8 @@ const setupFish = async () => {
     const notInstalled = plugins.filter(
       (plugin) => !installed.includes(plugin)
     );
-    const remove = installed.filter((plugin) => !plugins.includes(plugin));
     if (notInstalled.length > 0) {
       await $`fish -c "fisher install ${notInstalled}"`;
-    }
-    if (remove.length > 0) {
-      await $`fish -c "fisher remove ${remove}"`;
     }
   }, result === 'error' || result2 === 'error');
 
