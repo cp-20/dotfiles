@@ -140,8 +140,9 @@ const setupSymlink = async () => {
     const filesDirPath = new URL(join(import.meta.url, '../../files')).pathname;
     const files = await readDirRecursive(filesDirPath);
     for (const file of files) {
-      const path = join('~/', file.replace(filesDirPath, ''));
-      await $.path(path).symlinkTo(file, { kind: 'absolute' });
+      const home = await $`echo $HOME`.text();
+      const path = join(home, file.replace(filesDirPath, ''));
+      await $.path(file).symlinkTo(path, { kind: 'absolute' });
     }
   });
 };
