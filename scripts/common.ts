@@ -6,7 +6,7 @@ const setupPackages = async () => {
   await block('Package')(async () => {
     await $`sudo apt update`;
     await $`sudo apt upgrade -y`;
-    await $`sudo apt install -y make sqlite3 jq git curl wget unzip zip tar build-essential`;
+    await $`sudo apt install -y make sqlite3 jq git curl wget unzip zip tar build-essential clang gcc g++ llvm`;
   });
 };
 
@@ -73,7 +73,7 @@ const setupBrew = async () => {
   }, await $.commandExists('brew'));
 
   await block('Brew packages')(async () => {
-    const packages = ['ghq', 'gh', 'jnv', 'gcc', 'llvm', 'clang'];
+    const packages = ['ghq', 'gh', 'jnv'];
     await $`brew install ${packages}`;
   }, result === 'error');
 };
@@ -104,33 +104,13 @@ const setupNode = async () => {
 };
 
 const setupPython = async () => {
-  const result = await block('Python')(async () => {
+  await block('Python')(async () => {
     await $`sudo apt install -y python3`;
   }, await $.commandExists('python3'));
 
-  const result2 = await block('pip')(async () => {
+  await block('pip')(async () => {
     await $`sudo apt install -y python3-pip`;
   }, await $.commandExists('pip3'));
-
-  await block('Python packages')(async () => {
-    const packages = [
-      'black',
-      'colorama',
-      'Jinja2',
-      'matplotlib',
-      'modal-client',
-      'numpy',
-      'Pillow',
-      'pip',
-      'requests',
-      'scikit-learn',
-      'scipy',
-      'sympy',
-      'torch',
-      'tqdm',
-    ];
-    await $`pip3 install ${packages}`;
-  }, result === 'error' || result2 === 'error');
 };
 
 const setupGo = async () => {
