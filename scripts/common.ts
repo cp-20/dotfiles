@@ -95,6 +95,7 @@ const setupNode = async () => {
 
   await block('Bun')(async () => {
     await $`curl -fsSL https://bun.sh/install | bash`;
+    await $`source ~/.bashrc`;
   }, await $.commandExists('bun'));
 };
 
