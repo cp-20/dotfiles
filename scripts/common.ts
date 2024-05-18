@@ -64,8 +64,12 @@ const setupBrew = async () => {
     await $`bash`.stdin(
       $`curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh`
     );
-    await $`(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/cp20/.bashrc`;
-    await $`eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"`;
+    await $`bash`.stdin(
+      $`(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/cp20/.bashrc`
+    );
+    await $`bash`.stdin(
+      $`eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"`
+    );
   }, await $.commandExists('brew'));
 
   await block('Brew packages')(async () => {
