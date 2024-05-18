@@ -95,8 +95,6 @@ const setupNode = async () => {
 
   await block('Bun')(async () => {
     await $`curl -fsSL https://bun.sh/install | bash`;
-    await $`PATH=$PATH:~/.bun/bin >> ~/.bashrc`;
-    await $`source ~/.bashrc`;
   }, await $.commandExists('bun'));
 };
 
@@ -126,7 +124,7 @@ const setupPython = async () => {
       'torch',
       'tqdm',
     ];
-    await $`python3 -m pip3 install ${packages}`;
+    await $`pip3 install ${packages}`;
   }, result === 'error' || result2 === 'error');
 };
 
