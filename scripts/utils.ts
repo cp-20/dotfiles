@@ -16,7 +16,7 @@ export const readDirRecursive = async (dir: string): Promise<string[]> => {
 
 export const log = {
   start: (msg: string) =>
-    console.log(`\n\nTASK [${msg}] ${'-'.repeat(80 - msg.length)}`),
+    console.log(`\nTASK [${msg}] ${'-'.repeat(80 - msg.length)}\n`),
   end: (msg: string) => console.log(`${green('[ok]')} ${msg}`),
   skip: (msg: string) => console.log(`${cyan('[skip]')} ${msg}`),
   error: (msg: string) => console.log(`${red('[error]')} ${msg}`),
