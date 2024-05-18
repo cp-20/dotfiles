@@ -45,7 +45,7 @@ const setupFish = async () => {
   });
 
   await block('Default shell')(async () => {
-    await $`chsh -s $(which fish)`;
+    await $.raw`chsh -s $(which fish)`;
   });
 };
 
