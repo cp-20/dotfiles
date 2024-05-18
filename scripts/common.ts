@@ -126,6 +126,9 @@ const setupSymlink = async () => {
     for (const file of files) {
       const home = await $`echo $HOME`.text();
       const path = join(home, file.replace(filesDirPath, ''));
+      if (await $.path(path).exists()) {
+        await $.path(path).remove();
+      }
       await $.path(path).symlinkTo(file, { kind: 'absolute' });
     }
   });
