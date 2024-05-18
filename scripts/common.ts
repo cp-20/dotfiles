@@ -69,7 +69,7 @@ const setupBrew = async () => {
   await block('Brew packages')(async () => {
     const packages = ['ghq', 'gh', 'jnv', 'gcc', 'llvm', 'clang'];
     await $`brew install ${packages}`;
-  }, result === 'ok' || result === 'skip');
+  }, result === 'error');
 };
 
 const setupNode = async () => {
@@ -85,7 +85,7 @@ const setupNode = async () => {
   await block('Node packages')(async () => {
     const packages = ['@google/clasp', 'wrangler'];
     await $`npm install -g ${packages}`;
-  }, result === 'ok' || result === 'skip');
+  }, result === 'error');
 
   await block('Deno')(async () => {
     await $`curl -fsSL https://deno.land/install.sh | sh`;
@@ -123,7 +123,7 @@ const setupPython = async () => {
       'tqdm',
     ];
     await $`python3 -m pip3 install ${packages}`;
-  }, (result === 'ok' || result === 'skip') && (result2 === 'ok' || result2 === 'skip'));
+  }, result === 'error' || result2 === 'error');
 };
 
 const setupGo = async () => {
@@ -134,7 +134,7 @@ const setupGo = async () => {
 
 const setupSymlink = async () => {
   await block('Symlink')(async () => {
-    const filesDirPath = join(import.meta.url, '../../files');
+    const filesDirPath = new URL(join(import.meta.url, '../../files')).pathname;
     const files = await readDirRecursive(filesDirPath);
     for (const file of files) {
       const path = join('~/', file.replace(filesDirPath, ''));
